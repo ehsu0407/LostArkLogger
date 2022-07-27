@@ -10,11 +10,14 @@ namespace LostArkLogger.Utilities
 {
     public static class Uploader
     {
-        static String baseUrl = "http://lostark.shalzuth.com/";
+        //static String baseUrl = "http://lostark.shalzuth.com/";
         //static String baseUrl = "http://127.0.0.1/";
         public static void UploadLog(Byte[] bytes)
         {
-            try // ignore server failures
+            // Never upload anything
+            return;
+            
+            /*try // ignore server failures
             {
                 var request = (HttpWebRequest)WebRequest.Create(baseUrl + "appupload2c");
                 var logHash = string.Concat(Logger.hash.ComputeHash(bytes).Select(x => x.ToString("x2")));
@@ -27,7 +30,7 @@ namespace LostArkLogger.Utilities
                 var hashValue = new StreamReader(response.GetResponseStream()).ReadToEnd();
                 System.Diagnostics.Process.Start(baseUrl + "log/" + hashValue);
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { }*/
         }
     }
 }

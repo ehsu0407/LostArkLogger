@@ -22,7 +22,7 @@ namespace LostArkLogger
         public event Action onNewZone;
         public event Action beforeNewZone;
         public event Action<int> onPacketTotalCount;
-        public bool use_npcap = false;
+        public bool use_npcap = true;
         private object lockPacketProcessing = new object(); // needed to synchronize UI swapping devices
         public Machina.Infrastructure.NetworkMonitorType? monitorType = null;
         public List<Encounter> Encounters = new List<Encounter>();
@@ -68,7 +68,14 @@ namespace LostArkLogger
                     try
                     {
                         pcap_strerror(1); // verify winpcap works at all
-                        gameInterface = NetworkUtil.GetAdapterUsedByProcess("LostArk");
+                        if (!Properties.Settings.Default.IsRemote)
+                        {
+                            gameInterface = NetworkUtil.GetAdapterUsedByProcess("LostArk");
+                        }
+                        else
+                        {
+                            gameInterface = NetworkUtil.GetAdapterByName("Ethernet 2");
+                        }
                         foreach (var device in CaptureDeviceList.Instance)
                         {
                             if (device.MacAddress == null) continue; // SharpPcap.IPCapDevice.MacAddress is null in some cases
@@ -76,7 +83,7 @@ namespace LostArkLogger
                             {
                                 try
                                 {
-                                    device.Open(DeviceModes.None, 1000); // todo: 1sec timeout ok?
+                                    device.Open(DeviceModes.Promiscuous, 1000); // todo: 1sec timeout ok?
                                     device.Filter = filter;
                                     device.OnPacketArrival += new PacketArrivalEventHandler(Device_OnPacketArrival_pcap);
                                     device.StartCapture();

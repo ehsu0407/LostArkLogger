@@ -9,6 +9,18 @@ namespace LostArkLogger.Utilities
 {
     class NetworkUtil
     {
+        public static NetworkInterface GetAdapterByName(string adapterName)
+        {
+            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (nic.Name == adapterName)
+                {
+                    return nic;
+                }
+            }
+            throw new Exception("Cannot find any network adapters with the name " + adapterName);
+        }
+        
         public static NetworkInterface GetAdapterUsedByProcess(string pName)
         {
             Process[] candidates = Process.GetProcessesByName(pName);
